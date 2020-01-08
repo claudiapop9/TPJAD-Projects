@@ -1,0 +1,48 @@
+plugins {
+    id 'war'
+}
+
+project.ext {
+    glassfishDeploy = "C:\\tpjad\\Glassfish5.0\\glassfish\\domains\\domain1\\autodeploy"
+    wildflyDeploy = "C:\\tpjad\\wildfly-11.0.0.Final\\standalone\\deployments"
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    providedCompile "javax.servlet:javax.servlet-api:+"
+    providedCompile "javax:javaee-api:+"
+    compile "com.fasterxml.jackson.core:jackson-databind:+"
+}
+war {
+    baseName "Assignment2WAR"
+}
+
+task autoDeployGlassfish(type: Copy) {
+    group "build"
+    dependsOn("war", "cleanGlassfishDeploySite")
+
+    from "${buildDir}/libs"
+    into project.glassfishDeploy
+}
+
+task autoDeployWildfly(type: Copy) {
+    group "build"
+    dependsOn("war", "cleanWildflyDeploySite")
+
+    from "${buildDir}/libs"
+    into project.wildflyDeploy
+}
+
+task cleanGlassfishDeploySite(type: Delete) {
+    delete fileTree(project.glassfishDeploy)
+}
+
+task cleanWildflyDeploySite(type: Delete) {
+    delete fileTree(project.wildflyDeploy)
+}
